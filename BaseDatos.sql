@@ -17,13 +17,15 @@ CREATE TABLE clientes (
 );
 
 CREATE TABLE cuentas (
-    id SERIAL PRIMARY KEY,
-    numero_cuenta VARCHAR(50) UNIQUE NOT NULL,
-    tipo_cuenta VARCHAR(20) NOT NULL,
-    saldo_inicial NUMERIC(18,2) NOT NULL,
-    saldo_disponible NUMERIC(18,2) NOT NULL,
-    estado BOOLEAN NOT NULL,
-    cliente_id VARCHAR(50) NOT NULL
+     id SERIAL PRIMARY KEY,
+     numero_cuenta VARCHAR(50) UNIQUE NOT NULL,
+     tipo_cuenta VARCHAR(20) NOT NULL,
+     saldo_inicial NUMERIC(18,2) NOT NULL,
+     saldo_disponible NUMERIC(18,2) NOT NULL,
+     estado BOOLEAN NOT NULL,
+     cliente_id INT NOT NULL,
+     CONSTRAINT fk_cuentas_cliente
+         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 
 CREATE TABLE movimientos (
