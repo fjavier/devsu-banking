@@ -13,7 +13,7 @@ CREATE TABLE clientes (
     persona_id INT,
     contrasena VARCHAR(255) NOT NULL,
     estado BOOLEAN NOT NULL,
-    CONSTRAINT fk_clientes_persona FOREIGN KEY (persona_id) REFERENCES personas(id)
+    CONSTRAINT fk_clientes_persona FOREIGN KEY (persona_id) REFERENCES personas(id) ON DELETE CASCADE
 );
 
 CREATE TABLE cuentas (
@@ -25,7 +25,7 @@ CREATE TABLE cuentas (
      estado BOOLEAN NOT NULL,
      cliente_id INT NOT NULL,
      CONSTRAINT fk_cuentas_cliente
-         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+         FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
 );
 
 CREATE TABLE movimientos (
@@ -34,5 +34,5 @@ CREATE TABLE movimientos (
     tipo_movimiento VARCHAR(20) NOT NULL,
     valor NUMERIC(18,2) NOT NULL,
     saldo NUMERIC(18,2) NOT NULL,
-    cuenta_id INT NOT NULL REFERENCES cuentas(id)
+    cuenta_id INT NOT NULL REFERENCES cuentas(id) ON DELETE CASCADE
 );
