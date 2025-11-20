@@ -4,6 +4,10 @@
 Este proyecto implementa dos microservicios independientes, siguiendo arquitectura hexagonal y comunicación asincrónica mediante RabbitMQ.
 Permite gestionar clientes, cuentas bancarias, movimientos y reportes consolidados.
 
+Se crea la comunicación entre los microservicios mediante mensajes en cola, al crearse
+un cliente por primera vez se genera una cuenta bancaria por defecto, esto para demostrar
+el comportamiento de la comunicación asincrona entre microservicios.
+
 ## Stack de Técnologias:
 1. Java 
 2. Spring Boot
