@@ -6,14 +6,14 @@ import com.devsu.bankingaccount.domain.exception.SaldoNoDisponibleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -52,5 +52,17 @@ public class GlobalExceptionHandler {
         );
         errorMessage.setErrorDetail(errors);
         return ResponseEntity.badRequest().body(errorMessage);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleMissingParams(MissingServletRequestParameterException ex) {
+        Map<String, Object> error = new HashMap<>();
+
+        error.put("timestamp", LocalDateTime.now());
+        error.put("mensaje", "El parámetro requerido '" + ex.getParameterName() + "' es obligatorio");
+        error.put("tipo", ex.getParameterType());
+
+        return error;
     }
 }
