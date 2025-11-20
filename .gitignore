@@ -1,0 +1,10 @@
+/banking-account/build/
+/banking-account/.gradle/
+/banking-customer/logs/
+/logs/app.log
+/logs/app-2025-11-19-1.log.gz
+/banking-customer/build/
+/banking-customer/.gradle/
+/karate-reports/
+/logs/
+/.idea/

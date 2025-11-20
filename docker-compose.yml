@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: bank-postgres
+    environment:
+      POSTGRES_DB: bankdb
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./BaseDatos.sql:/docker-entrypoint-initdb.d/BaseDatos.sql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: bank-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  banking-customer:
+    image: banking-customer:latest
+    build: ./banking-customer
+    container_name: banking-customer
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bankdb
+      SPRING_DATASOURCE_USERNAME: bankuser
+      SPRING_DATASOURCE_PASSWORD: bankpass
+      SPRING_RABBITMQ_HOST: rabbitmq
+    ports:
+      - "8081:8080"
+  banking-account:
+    image: banking-account:latest
+    build: ./banking-account
+    container_name: banking-account
+    depends_on:
+      - postgres
+      - rabbitmq
+      - banking-customer
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bankdb
+      SPRING_DATASOURCE_USERNAME: bankuser
+      SPRING_DATASOURCE_PASSWORD: bankpass
+      SPRING_RABBITMQ_HOST: rabbitmq
+    ports:
+      - "8082:8080"
+  karate-tests:
+    image: gradle:8.8-jdk17
+    container_name: karate-tests
+    working_dir: /tests
+    volumes:
+      - ./banking-customer/src:/tests/src
+      - ./banking-customer/build.gradle:/tests/build.gradle
+      - ./banking-customer/settings.gradle:/tests/settings.gradle
+      - ./karate-reports:/tests/build/reports
+    depends_on:
+      - banking-customer
+    entrypoint: ["gradle", "test","-Dkarate.env=docker"]
